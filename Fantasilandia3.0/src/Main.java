@@ -95,6 +95,7 @@ public class Main {
                         System.out.println("✓ Cliente eliminado.");
                     else
                         System.out.println("✗ Cliente no encontrado.");
+                    break;
                 case 6: 
                 	System.out.print("Código de la atracción a eliminar: ");
                     String codEli = br.readLine().trim();
@@ -102,6 +103,7 @@ public class Main {
                         System.out.println("✓ Atracción eliminada.");
                     else
                         System.out.println("✗ Atracción no encontrada.");
+                    break;
 
                 case 7:
                     // Gestionar los bloques de horario (submenú)

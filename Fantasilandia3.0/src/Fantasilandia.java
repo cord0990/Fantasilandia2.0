@@ -26,8 +26,8 @@ public class Fantasilandia {
         addAtraccion(new Atraccion("Wild Mouse", "FAMILIARES", "D002", true, "Montaña rusa con giros cerrados"));
         addAtraccion(new Atraccion("Fly Over", "ADRENALINA", "A003", true, "Sillas voladoras desde gran altura"));
         addAtraccion(new Atraccion("Disko", "FAMILIARES", "D003", true, "Plataforma giratoria tipo disk'o"));
-        addAtraccion(new Atraccion("Mini Splash", "ZONA KIDS", "Z001", true, "Juego acuático infantil"));
-        addAtraccion(new Atraccion("Carrusel", "ZONA KIDS", "Z002", true, "Clásico carrusel infantil"));
+        addAtraccion(new Atraccion("Mini Splash", "INFANTILES", "Z001", true, "Juego acuático infantil"));
+        addAtraccion(new Atraccion("Carrusel", "INFANTILES", "Z002", true, "Clásico carrusel infantil"));
 
         // Bloque de horario de ejemplo
         DiasActivosAnuales d = getODia("2025-08-24");
