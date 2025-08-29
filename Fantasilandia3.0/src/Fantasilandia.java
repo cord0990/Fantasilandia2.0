@@ -4,14 +4,15 @@ import java.util.List;
 
 //Clase principal que administrara nuestro paeque de atracciones.
 public class Fantasilandia {
-    // ====== Listas principales ====== (SIA 1.2)
-    private List<Cliente> clientes = new ArrayList<>(); //Guardamos los clientes
-    private List<Atraccion> atracciones = new ArrayList<>(); //Guardamos las atracciones
 
-    //==Uso de mapas para una Busqueda Rapida== (SIA1.7)
-    private Map<String, Cliente> clientesPorRut = new HashMap<>(); // Buscar cliente por RUT
-    private Map<String, Atraccion> atrPorCodigo = new HashMap<>(); // Buscar atracción por su código
-    private Map<String, DiasActivosAnuales> diasPorFecha = new HashMap<>(); // Guardar los días activos (con bloques y clientes)
+    // ====== Listas principales ====== (SIA 1.2)
+    private ArrayList<Cliente> clientes = new ArrayList<Cliente>(); // Guardamos los clientes
+    private ArrayList<Atraccion> atracciones = new ArrayList<Atraccion>(); // Guardamos las atracciones
+
+    // == Uso de mapas para una Búsqueda Rápida == (SIA1.7)
+    private HashMap<String, Cliente> clientesPorRut = new HashMap<String, Cliente>(); // Buscar cliente por RUT
+    private HashMap<String, Atraccion> atrPorCodigo = new HashMap<String, Atraccion>(); // Buscar atracción por su código
+    private HashMap<String, DiasActivosAnuales> diasPorFecha = new HashMap<String, DiasActivosAnuales>(); // Guardar los días activos
 
     //====== Constructor con datos de ejemplo ====== (SIA1.4)
     public Fantasilandia() {
@@ -40,13 +41,6 @@ public class Fantasilandia {
         b2.addCliente(clientes.get(1)); // María
     }
 
-    // ====== Metodos getter y setter ===== (SIA 1.3)
-    public List<Cliente> getListaClientes() { return new ArrayList<>(this.clientes); }
-    public List<Atraccion> getListaAtracciones() { return new ArrayList<>(this.atracciones); }
-    
-    public void setListaClientes(ArrayList<Cliente> newClientes) {this.clientes = newClientes;}
-    public void setListaAtracciones(ArrayList<Atraccion> newAtracciones) {this.atracciones = newAtracciones;}
-    
     // ====== Métodos para agregar ==============
 
     // Agregar cliente al sistema

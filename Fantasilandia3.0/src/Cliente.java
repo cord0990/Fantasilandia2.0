@@ -7,10 +7,6 @@ public class Cliente {
     private String fechaNacimiento; //Fecha de nacimiento del cliente en formato (yyyy/mm/dd)
 
     // ====== Constructores ======
-
-    public Cliente() {  // Constructor vacío -> permite crear un cliente sin dar datos de inmediato
-    }
-
     // Constructor que inicializa todos los datos del cliente.
     public Cliente(String nombre, String rut, String idCliente, String fechaNacimiento) {
         this.nombre = nombre;

@@ -110,7 +110,8 @@ public class Main {
                     MenuBloques.gestionar(parque, br);
                     break;
                 case 8:
-                    MenuHorarios.gestionar(parque, br); 
+                    MenuHorarios.gestionar(parque, br);
+                    break;
 
                 case 0:
                     // Salida del programa
