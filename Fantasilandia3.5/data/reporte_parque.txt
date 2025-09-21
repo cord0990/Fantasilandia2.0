@@ -1,0 +1,15 @@
+=== REPORTE FANTASILANDIA ===
+Clientes: 3
+ID:C001 RUT:12345678-9 Nombre:Juan Perez FechaNacimiento:1990-05-10
+ID:C002 RUT:98765432-1 Nombre:Maria Soto FechaNacimiento:1995-11-22
+ID:CLI003 RUT:21844322-2 Nombre:aaaa FechaNacimiento:2005-05-23
+
+Atracciones: 8
+Atracción: Boomerang | Clasificación: ADRENALINA | Código: A001 | Activa: true | Montaña rusa con bucles intensos
+Atracción: Raptor | Clasificación: ADRENALINA | Código: A002 | Activa: true | Montaña rusa invertida y rápida
+Atracción: Tsunami | Clasificación: FAMILIARES | Código: D001 | Activa: true | River rápido que moja al final
+Atracción: Wild Mouse | Clasificación: FAMILIARES | Código: D002 | Activa: true | Montaña rusa con giros cerrados
+Atracción: Fly Over | Clasificación: ADRENALINA | Código: A003 | Activa: true | Sillas voladoras desde gran altura
+Atracción: Disko | Clasificación: FAMILIARES | Código: D003 | Activa: true | Plataforma giratoria tipo disk'o
+Atracción: Mini Splash | Clasificación: INFANTILES | Código: Z001 | Activa: true | Juego acuático infantil
+Atracción: Carrusel | Clasificación: INFANTILES | Código: Z002 | Activa: true | Clásico carrusel infantil
