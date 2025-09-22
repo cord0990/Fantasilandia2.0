@@ -20,6 +20,16 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+//importar para el reporte de atracciones
+import java.nio.file.*;
+import java.nio.charset.StandardCharsets;
+import java.io.BufferedWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.awt.Desktop;
+import java.lang.reflect.Method;
+
+
 // Importar las clases del modelo
 import fantasilandia.*;
 
@@ -160,7 +170,13 @@ public class MenuAtraccionesGui extends JFrame {
         });
         btnVerHorarios.setBounds(640, 403, 200, 40);
         contentPane.add(btnVerHorarios);
-        
+
+        //boton para obtener el reporte de atracciones en formato .txt
+        JButton btnReporte = new JButton("Reporte (Escritorio)");
+        btnReporte.addActionListener(e -> generarReporteAtraccionesEnEscritorio());
+        btnReporte.setBounds(520, 520, 190, 40); // Posición sugerida
+        contentPane.add(btnReporte);
+
         // Etiqueta con información
         JLabel lblInfo = new JLabel("Total de atracciones: 0");
         lblInfo.setBounds(10, 30, 300, 20);
@@ -413,6 +429,99 @@ public class MenuAtraccionesGui extends JFrame {
             case "ACUATICOS": return "C";
             case "FAMILIARES": return "D";
             default: return "X";
+        }
+    }
+
+    // ===== Helpers Escritorio / abrir =====
+    private Path getDesktopPath() {
+        String home = System.getProperty("user.home");
+        Path desktop = Paths.get(home, "Desktop");
+        if (Files.exists(desktop)) return desktop;
+        Path alt = Paths.get(home, "Escritorio"); // por si el SO lo nombra en español
+        return Files.exists(alt) ? alt : Paths.get(home);
+    }
+
+    private void abrirEnBlocDeNotas(Path archivo) throws java.io.IOException {
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            new ProcessBuilder("notepad.exe", archivo.toString()).start();
+        } else if (Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().open(archivo.toFile()); // macOS/Linux: app por defecto
+        }
+    }
+
+    // ===== Utilidades para leer campos sin romper compilación =====
+    private static String callIfExists(Object obj, String... methodNames) {
+        for (String name : methodNames) {
+            try {
+                Method m = obj.getClass().getMethod(name);
+                Object val = m.invoke(obj);
+                if (val != null) return String.valueOf(val);
+            } catch (Exception ignore) {}
+        }
+        return ""; // si nada aplica
+    }
+
+    private static String safe(String s) { return s == null ? "" : s; }
+
+    // ===== Generar TXT con las atracciones =====
+    private void generarReporteAtraccionesEnEscritorio() {
+        try {
+            Path escritorio = getDesktopPath();
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+            Path archivo = escritorio.resolve("ReporteAtracciones_" + timestamp + ".txt");
+
+            String nl = System.lineSeparator();
+            try (BufferedWriter w = Files.newBufferedWriter(
+                    archivo, StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+
+                w.write("REPORTE DE ATRACCIONES - FANTASILANDIA" + nl);
+                w.write("Generado: " + LocalDateTime.now()
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + nl);
+                w.write("=".repeat(60) + nl + nl);
+
+                // Total (si tienes parque.contarAtracciones())
+                try {
+                    w.write(String.format("Total de atracciones: %d%s%s",
+                            parque.contarAtracciones(), nl, nl));
+                } catch (Exception ignore) {
+                    w.write(nl); // fallback si no existe el contador
+                }
+
+                // Encabezados de columnas
+                w.write(String.format("%-30s\t%-14s\t%-14s%s",
+                        "Nombre", "Código/ID", "Clasificación", nl));
+                w.write("-".repeat(60) + nl);
+
+                // Iterar atracciones
+                for (Atraccion a : parque.getAtracciones()) { // asumiendo este getter
+                    // Nombre (intenta varios getters comunes)
+                    String nombre = callIfExists(a, "getNombre", "getName");
+
+                    // Código o ID (intenta variantes comunes)
+                    String codigo = callIfExists(a,
+                            "getCodigo", "getCodigoAtraccion", "getIdAtraccion", "getId");
+
+                    // Clasificación / categoría / tipo (según tu modelo)
+                    String clasif = callIfExists(a,
+                            "getClasificacion", "getCategoria", "getTipo", "getNivel");
+
+                    w.write(String.format("%-30s\t%-14s\t%-14s%s",
+                            safe(nombre), safe(codigo), safe(clasif), nl));
+                }
+            }
+
+            JOptionPane.showMessageDialog(this,
+                    "Reporte generado en el Escritorio:\n" + archivo.toAbsolutePath(),
+                    "Reporte generado", JOptionPane.INFORMATION_MESSAGE);
+
+            abrirEnBlocDeNotas(archivo);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo generar/abrir el reporte: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
