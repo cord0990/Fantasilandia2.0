@@ -67,7 +67,7 @@ public class MenuAtraccionesGui extends JFrame {
         this.parque = parque;
         
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 950, 650);
+        setBounds(100, 100, 950, 700);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -174,7 +174,7 @@ public class MenuAtraccionesGui extends JFrame {
         //boton para obtener el reporte de atracciones en formato .txt
         JButton btnReporte = new JButton("Reporte (Escritorio)");
         btnReporte.addActionListener(e -> generarReporteAtraccionesEnEscritorio());
-        btnReporte.setBounds(520, 520, 190, 40); // Posición sugerida
+        btnReporte.setBounds(40, 600, 190, 40); // Posición sugerida
         contentPane.add(btnReporte);
 
         // Etiqueta con información
@@ -432,7 +432,7 @@ public class MenuAtraccionesGui extends JFrame {
         }
     }
 
-    // ===== Helpers Escritorio / abrir =====
+    // ===== Helpers Escritorio Para generar el .txt=====
     private Path getDesktopPath() {
         String home = System.getProperty("user.home");
         Path desktop = Paths.get(home, "Desktop");
@@ -446,7 +446,7 @@ public class MenuAtraccionesGui extends JFrame {
         if (os.contains("win")) {
             new ProcessBuilder("notepad.exe", archivo.toString()).start();
         } else if (Desktop.isDesktopSupported()) {
-            Desktop.getDesktop().open(archivo.toFile()); // macOS/Linux: app por defecto
+            Desktop.getDesktop().open(archivo.toFile());
         }
     }
 
@@ -481,7 +481,7 @@ public class MenuAtraccionesGui extends JFrame {
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + nl);
                 w.write("=".repeat(60) + nl + nl);
 
-                // Total (si tienes parque.contarAtracciones())
+                // Total
                 try {
                     w.write(String.format("Total de atracciones: %d%s%s",
                             parque.contarAtracciones(), nl, nl));
@@ -503,7 +503,7 @@ public class MenuAtraccionesGui extends JFrame {
                     String codigo = callIfExists(a,
                             "getCodigo", "getCodigoAtraccion", "getIdAtraccion", "getId");
 
-                    // Clasificación / categoría / tipo (según tu modelo)
+                    // categoría
                     String clasif = callIfExists(a,
                             "getClasificacion", "getCategoria", "getTipo", "getNivel");
 
