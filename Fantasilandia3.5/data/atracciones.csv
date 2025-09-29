@@ -1,8 +1,51 @@
-A001,Boomerang,ADRENALINA,true,Montaña rusa con bucles intensos
-A002,Raptor,ADRENALINA,true,Montaña rusa invertida y rápida
-D001,Tsunami,FAMILIARES,true,River rápido que moja al final
-D002,Wild Mouse,FAMILIARES,true,Montaña rusa con giros cerrados
-A003,Fly Over,ADRENALINA,true,Sillas voladoras desde gran altura
-D003,Disko,FAMILIARES,true,Plataforma giratoria tipo disk'o
-Z001,Mini Splash,INFANTILES,true,Juego acuático infantil
-Z002,Carrusel,INFANTILES,true,Clásico carrusel infantil
+A001,Boomerang,Adrenalina,true,Montaña rusa ...
+AD001,Black Hole,Adrenalina,false,"Deslízate por un agujero negro
+AD002,Xtreme Fall,Adrenalina,true,Desafía la caída libre desde los 35 metros de altura.
+AD003,Spider,Adrenalina,false,Atracción tipo péndulo que gira y se balancea.
+AD004,Air Race,Adrenalina,true,Sé el piloto de un avión y prepárate para dar vueltas.
+AD005,Volare,Adrenalina,false,Atracción de sillas que giran y elevan.
+AD006,Tsunami,Adrenalina,true,Juego de agua tipo splash/rapids; thrills acuáticos.
+AD007,Boomerang,Destreza,false,Montaña rusa con recorrido de ida y vuelta y bucles.
+AD008,Rapid River,Adrenalina,true,Súbete a una balsa y siente la sensación de rápidos.
+AD009,Barco Pirata,Adrenalina,false,Barco oscilante que balancea a los pasajeros.
+AD010,Fly Over,Adrenalina,true,Atracción de sillas voladoras con vistas panorámicas.
+AD011,Pulpo,Adrenalina,false,"Juego giratorio con brazos
+AD012,Raptor,Adrenalina,true,Montaña rusa invertida de alta intensidad.
+AD013,Kamikaze,Adrenalina,false,Jaula que se balancea y gira para emociones fuertes.
+AD014,Moby Dick,Adrenalina,true,Atracción con movimiento tipo ola marina.
+AD015,Castillo Encantado,Adrenalina,false,Casa de terror con personajes y efectos.
+AD016,Disko,Adrenalina,true,Plataforma oscilante que gira (Disk'o).
+AD017,Top Spin,Adrenalina,false,Atracción de giros intensos y volteretas.
+AD018,Monga,Adrenalina,true,Atracción con movimientos bruscos y giros.
+AD019,Tagadá,Adrenalina,false,Atracción de péndulo con giros y movimientos bruscos.
+AD020,Crazy Dance,Adrenalina,true,Atracción con movimientos rítmicos y giros.
+AD021,Tren Minero,Adrenalina,false,Montaña rusa estilo tren de mina (recorrido temático).
+FA001,Tren CP,Familiares,true,Tren familiar que recorre el parque por su perímetro.
+FA002,Skooter,Familiares,false,Autos chocadores para niños y familias.
+FA003,Twister,Familiares,true,Juego familiar tipo voladora/chinita.
+FA004,Botes Chocadores,Familiares,false,"Botes para choque en agua
+FA005,Súper Trucks,Familiares,true,Camiones tipo atracción para toda la familia.
+ZK001,Mini Splash,Zona Kids,false,Pequeños pueden navegar en un tronco por rápidos; supervisión adulta.
+ZK002,Carrusel,Zona Kids,true,Clásico carrusel con caballos y música para niños.
+ZK003,Ford T,Zona Kids,false,Coches estilo Ford T para que manejen los niños.
+ZK004,Circus Train,Zona Kids,true,Pequeño tren temático para los más chicos.
+ZK005,Samba Balloon,Zona Kids,false,Globos aerostáticos que giran y se balancean para niños.
+ZK006,Montaña Dragón,Adrenalina,true,Montaña rusa apta para grandes y chicos.
+JD001,Hi Striker,Destreza,false,Juego de fuerza tipo martillo (prueba de fuerza).
+JD002,Lucky Shot Challenge,Destreza,true,Juego de puntería y concentración para ganar premios.
+JD003,Down the Clown,Destreza,false,Juego de puntería: derriba al payaso.
+JD004,Rueda de la Fortuna,Destreza,true,Ruleta/rueda con mecánica de destreza y suerte.
+FA006,Wild Mouse,Familiares,false,"Montaña rusa tipo Wild Mouse
+ZK007,Pulpo (Kids),Zona Kids,true,"Versión kids del Pulpo
+FA007,Moon Base,Familiares,false,Atracción temática espacial para familias.
+FA008,The Pirate Revenge,Familiares,true,Recorrido/barco temático con interacción y salpicaduras.
+AD022,Kamikaze,Adrenalina,false,Jaula que se balancea y gira brindando emociones intensas.
+AD023,Top Spin,Adrenalina,true,Plataforma giratoria y oscilante que puede dejarte boca abajo.
+FA009,Disko,Familiares,false,Plataforma giratoria con movimiento oscilante apta para familias.
+AD024,Tagadá,Adrenalina,true,Atracción de péndulo con movimientos bruscos y rápidos.
+AD025,Monga,Adrenalina,false,Atracción con oscilaciones fuertes y giros repentinos.
+FA010,Tren Minero,Familiares,true,Recorrido en tren temático ideal para familias y shows en su estación.
+ZK008,Car City,Zona Kids,false,"Circuito de autos pensados para los más pequeños
+ZK009,Samba Balloon,Zona Kids,true,Globos aerostáticos giratorios para niños.
+ZK010,Ford T,Zona Kids,false,Coches clásicos estilo Ford T para que los niños conduzcan.
+JD005,Rueda de la Fortuna,Destreza,true,Ruleta gigante que ofrece vistas panorámicas y calma familiar.

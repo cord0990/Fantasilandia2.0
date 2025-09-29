@@ -1,5 +1,3 @@
-package fantasilandia;
-
 import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -10,6 +8,7 @@ import Excepciones.HorarioMalFormateadoException;
 import Excepciones.RutMalFormateadoException;
 
 import GUI.MenuPrincipal;
+import fantasilandia.Fantasilandia;
 import persistencia.PersistenceBridge;
 
 public final class Main {
