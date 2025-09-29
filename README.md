@@ -21,7 +21,7 @@ Puede revisar las clases principales del sistema (`Cliente`, `Atraccion`, `Bloqu
 
 ## Instrucciones de ejecución Para cada una
 
-Una vez descargado y descomprimido el proyecto, debe abrir la carpeta **Fantasilandia 3.0** con un IDE que soporte Java (IntelliJ, Eclipse o NetBeans).  
+Una vez descargado y descomprimido el proyecto, debe abrir la carpeta **Fantasilandia 4.0** con un IDE que soporte Java (IntelliJ, Eclipse o NetBeans).  
 Siga los pasos a continuación para compilar y ejecutar el sistema en cada uno anteriormente mencionado.
 
 ---
@@ -31,7 +31,7 @@ Siga los pasos a continuación para compilar y ejecutar el sistema en cada uno a
 1. Abra el proyecto en IntelliJ.  
 2. Compile todas las clases con **Build > Build Project**.  
 3. Ejecute la clase `Main` con **Run > Run 'Main'**.  
-4. Interactúe con el menú en la consola integrada.  
+4. Interactúe con la aplicacion a traves de las ventanas. 
 
 ---
 
