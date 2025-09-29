@@ -14,8 +14,8 @@ El sistema permite registrar y listar clientes, administrar atracciones y organi
 
 ## Documentación
 
-Toda la interacción del sistema se realiza Mediante la **consola**.  
-Puede revisar las clases principales del sistema (`Cliente`, `Atraccion`, `BloqueDeAtraccion`, `DiasActivosAnuales`, `Fantasilandia`, etc.) dentro del código fuente.
+Toda la interacción del sistema se realiza Mediante ventanas javaswing.
+Puede revisar las clases principales del sistema (`Cliente`, `Atraccion`, `BloqueDeAtraccion`, `DiasActivosAnuales`, `Fantasilandia`, etc.) dentro del código fuente a traves de los menus correspondientes.
 
 ---
 
