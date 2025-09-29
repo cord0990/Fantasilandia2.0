@@ -29,50 +29,26 @@ public class Fantasilandia {
     private HashMap<String, Atraccion> atrPorCodigo = new HashMap<String, Atraccion>(); // Buscar atracción por su código
     private HashMap<String, DiasActivosAnuales> diasPorFecha = new HashMap<String, DiasActivosAnuales>(); // Guardar los días activos
 
-    
+
     // constructor nuevo: si populateSample == true, se llenan los ejemplos
-    public Fantasilandia(boolean populateSample) throws RutMalFormateadoException, FechaMalFormateadaException, HorarioMalFormateadoException, BloqueMalFormateadoException {
-        // (los attributes ya se inicializan en la declaración de campos)
-        if (!populateSample) return;
-
-        addCliente(new Cliente("Juan Perez", "12345678-9", "C001", "1990-05-10"));
-        addCliente(new Cliente("Maria Soto", "98765432-1", "C002", "1995-11-22"));
-
-        // Atracciones sintéticas reales
-        addAtraccion(new Atraccion("Boomerang", "ADRENALINA", "A001", true, "Montaña rusa con bucles intensos"));
-        addAtraccion(new Atraccion("Raptor", "ADRENALINA", "A002", true, "Montaña rusa invertida y rápida"));
-        addAtraccion(new Atraccion("Tsunami", "FAMILIARES", "D001", true, "River rápido que moja al final"));
-        addAtraccion(new Atraccion("Wild Mouse", "FAMILIARES", "D002", true, "Montaña rusa con giros cerrados"));
-        addAtraccion(new Atraccion("Fly Over", "ADRENALINA", "A003", true, "Sillas voladoras desde gran altura"));
-        addAtraccion(new Atraccion("Disko", "FAMILIARES", "D003", true, "Plataforma giratoria tipo disk'o"));
-        addAtraccion(new Atraccion("Mini Splash", "INFANTILES", "Z001", true, "Juego acuático infantil"));
-        addAtraccion(new Atraccion("Carrusel", "INFANTILES", "Z002", true, "Clásico carrusel infantil"));
-
-        // Bloque de horario de ejemplo
-        DiasActivosAnuales d = getODia("2025-08-24");
-        BloqueDeAtraccion b = d.addBloque("B001", buscarAtraccion("A001"), new HorariosAtraccion("10:00","11:00"));
-        b.addCliente(clientes.get(0));
-        
-        // NUEVO: otro día y bloque para poblar diasPorFecha
-        DiasActivosAnuales d2 = getODia("2025-08-25");
-        BloqueDeAtraccion b2 = d2.addBloque("B002", buscarAtraccion("A002"), new HorariosAtraccion("12:00", "13:00"));
-        b2.addCliente(clientes.get(1)); // María
+    public Fantasilandia(boolean populateSample) {
     }
 
 
+    //SIA 2.9. APlicacion de Excepciones.
     //====== Constructor con datos de ejemplo ====== (SIA1.4)
     public Fantasilandia() throws RutMalFormateadoException, FechaMalFormateadaException, HorarioMalFormateadoException, BloqueMalFormateadoException {
-    	this(true);
-    	 // Clientes de ejemplo
-    } 
+        this(true);
+        // Clientes de ejemplo
+    }
 
     // Getter
-    
+
     // Devuelve la lista de atracciones (mutable, para que la GUI pueda agregar/editar)
     public ArrayList<Atraccion> getAtracciones() {
         return this.atracciones;
     }
- // Devuelve la lista de clientes (mutable, para que la GUI pueda agregar/editar)
+    // Devuelve la lista de clientes (mutable, para que la GUI pueda agregar/editar)
     public ArrayList<Cliente> getClientes() {
         return this.clientes;
     }
@@ -83,8 +59,8 @@ public class Fantasilandia {
     public void addCliente(Cliente c) {
         clientes.add(c);
         clientesPorRut.put(c.getRut(), c); // lo guardamos en el mapa para encontrar al Cliente por RUT
-        
-        
+
+
     }
 
     // Agregar atracción al sistema
@@ -112,12 +88,12 @@ public class Fantasilandia {
         }
     }
 
-    
+
     // ====== Metodos para Eliminar ==========
-    
+
     // Eliminar cliente por RUT
     public boolean eliminarCliente(String rut) {
-        Cliente c = clientesPorRut.remove(rut); 
+        Cliente c = clientesPorRut.remove(rut);
         if (c != null) {
             clientes.remove(c);
             return true;
@@ -135,24 +111,24 @@ public class Fantasilandia {
         return false;
     }
 
-    
+
     // ====== Metodos de contar =====
     public int contarClientes() {
         return this.clientes.size();
     }
-    
+
     public int contarAtracciones() {
         return this.atracciones.size();
     }
-    
+
     // ====== Metodos de busqueda ======
-   
-    		// === Buscar Cliente por RUT usando el HashMap ===
+
+    // === Buscar Cliente por RUT usando el HashMap ===
     public Cliente buscarCliente(String rut) {
         if (rut == null) return null;
         return clientesPorRut.get(rut);
     }
-    
+
     // ====== Buscar atracción (SIA1.6)======
     public Atraccion buscarAtraccion(String codigo) {
         return atrPorCodigo.get(codigo); // Buscar por código (más rápido con el mapa)
@@ -214,9 +190,9 @@ public class Fantasilandia {
         System.out.println("\nClientes del " + b);
         for (Cliente c : b.getClientesParticipantes()) System.out.println(" - " + c);
     }
-    
+
     // ==== Metodos del Menu de Horarios (SIA 1.8)
- // Lista todos los horarios de una atracción
+    // Lista todos los horarios de una atracción
     public void listarHorariosDeAtraccion(String codigo) {
         Atraccion a = buscarAtraccion(codigo);
         if (a == null) {
@@ -234,6 +210,8 @@ public class Fantasilandia {
             System.out.println((i++) + ") " + h);
         }
     }
+
+    //==============Metodos de Horarios en atraccion.
     public boolean agregarHorarioAAtraccion(String codigo, String inicio, String fin) throws HorarioMalFormateadoException {
         Atraccion a = buscarAtraccion(codigo);
         if (a == null) {
@@ -245,173 +223,233 @@ public class Fantasilandia {
         a.addHorario(h);
         return true;
     }
-    
-    
-    //==== Setters y Getters para clase Horario=======
-    
- // ======================
- // Métodos para manejar DiasActivosAnuales
- // ======================
 
- // Agregar un nuevo día activo por fecha */
+    /**
+     * Elimina un horario de una atracción identificado por su código y horas (inicio, fin).
+     * Lanza Exception si la atracción o el horario no existen.
+     */
+    public void eliminarHorarioDeAtraccion(String codigo, String inicio, String fin) throws Exception {
+        Atraccion a = buscarAtraccion(codigo);
+        if (a == null) {
+            throw new Exception("No existe atracción con código: " + codigo);
+        }
+        java.util.List<HorariosAtraccion> hs = a.getHorariosEstandares();
+        HorariosAtraccion objetivo = null;
+        for (HorariosAtraccion h : hs) {
+            if (h.getHoraInicio().equals(inicio) && h.getHoraFin().equals(fin)) {
+                objetivo = h;
+                break;
+            }
+        }
+        if (objetivo == null) {
+            throw new Exception("No se encontró el horario especificado para la atracción.");
+        }
+        hs.remove(objetivo);
+    }
+
+    /**
+     * Modifica un horario existente de una atracción: busca por inicio/fin antiguos y lo reemplaza por uno nuevo.
+     * Valida formato usando HorariosAtraccion y evita duplicados.
+     */
+    public void modificarHorarioDeAtraccion(String codigo, String inicioViejo, String finViejo,
+                                            String nuevoInicio, String nuevoFin) throws Exception {
+        Atraccion a = buscarAtraccion(codigo);
+        if (a == null) {
+            throw new Exception("No existe atracción con código: " + codigo);
+        }
+        java.util.List<HorariosAtraccion> hs = a.getHorariosEstandares();
+        HorariosAtraccion objetivo = null;
+        for (HorariosAtraccion h : hs) {
+            if (h.getHoraInicio().equals(inicioViejo) && h.getHoraFin().equals(finViejo)) {
+                objetivo = h;
+                break;
+            }
+        }
+        if (objetivo == null) {
+            throw new Exception("No se encontró el horario a modificar para la atracción.");
+        }
+        // Validar nuevo horario (lanza HorarioMalFormateadoException si hay problema)
+        HorariosAtraccion nuevo = new HorariosAtraccion(nuevoInicio, nuevoFin);
+        // Verificar duplicado
+        boolean dup = hs.stream().anyMatch(x -> x.getHoraInicio().equals(nuevoInicio)
+                && x.getHoraFin().equals(nuevoFin));
+        if (dup) {
+            throw new Exception("El nuevo horario ya existe para la atracción.");
+        }
+        // Reemplazar: quitar antiguo y agregar el nuevo
+        hs.remove(objetivo);
+        a.addHorario(nuevo);
+    }
+
+
+
+    //==== Setters y Getters para clase Horario=======
+
+    // ======================
+    // Métodos para manejar DiasActivosAnuales
+    // ======================
+
+    // Agregar un nuevo día activo por fecha */
     public boolean agregarDiaActivoAnual(String fecha) {
-     	if (diasPorFecha.containsKey(fecha)) return false;
-     		diasPorFecha.put(fecha, new DiasActivosAnuales(fecha));
-     		return true;
-    	}
+        if (diasPorFecha.containsKey(fecha)) return false;
+        diasPorFecha.put(fecha, new DiasActivosAnuales(fecha));
+        return true;
+    }
 
     // Buscar un día activo existente */
     public DiasActivosAnuales buscarDiaActivoAnual(String fecha) {
-    	return diasPorFecha.get(fecha);
-    }
-    	
-    // Eliminar un día activo */
-    public boolean eliminarDiaActivoAnual(String fecha) {
-    	return diasPorFecha.remove(fecha) != null;
+        return diasPorFecha.get(fecha);
     }
 
- // Devolver todos los días activos */
+    // Eliminar un día activo */
+    public boolean eliminarDiaActivoAnual(String fecha) {
+        return diasPorFecha.remove(fecha) != null;
+    }
+
+    // Devolver todos los días activos */
     public Map<String, DiasActivosAnuales> getDiasActivosAnuales() {
-    	return diasPorFecha;
+        return diasPorFecha;
     }
 
     // Modificar la fecha de un día activo */
     public boolean modificarDiaActivoAnual(String fechaAntigua, String nuevaFecha) {
-    	DiasActivosAnuales dia = diasPorFecha.get(fechaAntigua);
-    	if (dia == null || diasPorFecha.containsKey(nuevaFecha)) return false;
-	
-	     diasPorFecha.remove(fechaAntigua);
-	     dia.setFecha(nuevaFecha);
-	     diasPorFecha.put(nuevaFecha, dia);
-	
-	     return true;
-	 }
-	 
-	//Cargar desde CSV (SIA 2.2)
-	public void cargarDesdeCSV(String dir) throws RutMalFormateadoException, FechaMalFormateadaException, HorarioMalFormateadoException, BloqueMalFormateadoException {
-	  Path base = Paths.get(dir);
-	  try {
-	      // ATRACCIONES
-	      Path pa = base.resolve("atracciones.csv");
-	      if (Files.exists(pa)) {
-	          for (String line : Files.readAllLines(pa)) {
-	              if (line.trim().isEmpty()) continue;
-	              String[] p = line.split(",", -1);
-	              // codigo,nombre,clasificacion,activa,descripcion
-	              String codigo = p[0];
-	              String nombre = p[1];
-	              String clasif = p[2];
-	              boolean activa = Boolean.parseBoolean(p[3]);
-	              String desc = p.length > 4 ? p[4] : "";
-	              if (buscarAtraccion(codigo) == null)
-	                  addAtraccion(new Atraccion(nombre, clasif, codigo, activa, desc));
-	          }
-	      }
-	
-	      // CLIENTES
-	      Path pc = base.resolve("clientes.csv");
-	      if (Files.exists(pc)) {
-	          for (String line : Files.readAllLines(pc)) {
-	              if (line.trim().isEmpty()) continue;
-	              String[] p = line.split(",", -1);
-	              // id,rut,nombre,fechaNacimiento
-	              String id = p[0];
-	              String rut = p[1];
-	              String nombre = p[2];
-	              String fecha = p.length > 3 ? p[3] : "";
-	              if (buscarCliente(rut) == null)
-	                  addCliente(new Cliente(nombre, rut, id, fecha));
-	          }
-	      }
-	
-	      // BLOQUES
-	      Path pb = base.resolve("bloques.csv");
-	      if (Files.exists(pb)) {
-	          for (String line : Files.readAllLines(pb)) {
-	              if (line.trim().isEmpty()) continue;
-	              String[] p = line.split(",", -1);
-	              String codigoBloque = p[0];
-	              String fecha = p[1];
-	              String codigoAtr = p[2];
-	              String horaIni = p[3];
-	              String horaFin = p[4];
-	              String ruts = p.length > 5 ? p[5] : "";
-	              Atraccion a = buscarAtraccion(codigoAtr);
-	              if (a == null) continue;
-	              DiasActivosAnuales dia = getODia(fecha);
-	              BloqueDeAtraccion b = dia.addBloque(codigoBloque, a, new HorariosAtraccion(horaIni, horaFin));
-	
-	              if (!ruts.isEmpty()) {
-	                  for (String rut : ruts.split(";")) {
-	                      Cliente c = buscarCliente(rut);
-	                      if (c != null) b.addCliente(c);
-	                  }
-	              }
-	          }
-	      }
-	
-	  } catch (IOException e) {
-	      e.printStackTrace();
-	  }
-	}
-	
-	//Guardar en CSV (SIA 2.2)
-	public void guardarEnCSV(String dir) {
-	  Path base = Paths.get(dir);
-	  try {
-	      if (!Files.exists(base)) Files.createDirectories(base);
-	
-	      // ATRACCIONES
-	      Path pa = base.resolve("atracciones.csv");
-	      try (BufferedWriter bw = Files.newBufferedWriter(pa)) {
-	          for (Atraccion a : atracciones) {
-	              String line = String.join(",", a.getCodigoAtraccion(), a.getNombre(), a.getClasificacion(), String.valueOf(a.isActiva()), a.getDescripcion());
-	              bw.write(line); bw.newLine();
-	          }
-	      }
-	
-	      // CLIENTES
-	      Path pc = base.resolve("clientes.csv");
-	      try (BufferedWriter bw = Files.newBufferedWriter(pc)) {
-	          for (Cliente c : clientes) {
-	              String line = String.join(",", c.getIdCliente(), c.getRut(), c.getNombre(), c.getFechaNacimiento());
-	              bw.write(line); bw.newLine();
-	          }
-	      }
-	
-	      // BLOQUES
-	      Path pb = base.resolve("bloques.csv");
-	      try (BufferedWriter bw = Files.newBufferedWriter(pb)) {
-	          for (DiasActivosAnuales dia : diasPorFecha.values()) {
-	              for (BloqueDeAtraccion b : dia.getBloques()) {
-	                  String ruts = b.getClientesParticipantes().stream().map(Cliente::getRut).collect(Collectors.joining(";"));
-	                  String line = String.join(",", b.getCodigoBloque(), dia.getFecha(), b.getAtraccion().getCodigoAtraccion(), b.getHorario().getHoraInicio(), b.getHorario().getHoraFin(), ruts);
-	                  bw.write(line); bw.newLine();
-	              }
-	          }
-	      }
-	
-	  } catch (IOException e) {
-	      e.printStackTrace();
-	  }
-	}
-	// generar reporte SIA  2.10
-	public void generarReporteTxt(String dir) {
-	    Path base = Paths.get(dir);
-	    Path report = base.resolve("reporte_parque.txt");
-	    try (BufferedWriter bw = Files.newBufferedWriter(report, StandardCharsets.UTF_8)) {
-	        bw.write("=== REPORTE FANTASILANDIA ===\n");
-	        bw.write("Clientes: " + clientes.size() + "\n");
-	        for (Cliente c : clientes) {
-	            bw.write(c.toString() + "\n");
-	        }
-	        bw.write("\nAtracciones: " + atracciones.size() + "\n");
-	        for (Atraccion a : atracciones) {
-	            bw.write(a.toString() + "\n");
-	        }
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	}
+        DiasActivosAnuales dia = diasPorFecha.get(fechaAntigua);
+        if (dia == null || diasPorFecha.containsKey(nuevaFecha)) return false;
+
+        diasPorFecha.remove(fechaAntigua);
+        dia.setFecha(nuevaFecha);
+        diasPorFecha.put(nuevaFecha, dia);
+
+        return true;
+    }
+
+
+
+    //Cargar desde CSV (SIA 2.2)
+    public void cargarDesdeCSV(String dir) throws RutMalFormateadoException, FechaMalFormateadaException, HorarioMalFormateadoException, BloqueMalFormateadoException {
+        Path base = Paths.get(dir);
+        try {
+            // ATRACCIONES
+            Path pa = base.resolve("atracciones.csv");
+            if (Files.exists(pa)) {
+                for (String line : Files.readAllLines(pa)) {
+                    if (line.trim().isEmpty()) continue;
+                    String[] p = line.split(",", -1);
+                    // codigo,nombre,clasificacion,activa,descripcion
+                    String codigo = p[0];
+                    String nombre = p[1];
+                    String clasif = p[2];
+                    boolean activa = Boolean.parseBoolean(p[3]);
+                    String desc = p.length > 4 ? p[4] : "";
+                    if (buscarAtraccion(codigo) == null)
+                        addAtraccion(new Atraccion(nombre, clasif, codigo, activa, desc));
+                }
+            }
+
+            // CLIENTES
+            Path pc = base.resolve("clientes.csv");
+            if (Files.exists(pc)) {
+                for (String line : Files.readAllLines(pc)) {
+                    if (line.trim().isEmpty()) continue;
+                    String[] p = line.split(",", -1);
+                    // id,rut,nombre,fechaNacimiento
+                    String id = p[0];
+                    String rut = p[1];
+                    String nombre = p[2];
+                    String fecha = p.length > 3 ? p[3] : "";
+                    if (buscarCliente(rut) == null)
+                        addCliente(new Cliente(nombre, rut, id, fecha));
+                }
+            }
+
+            // BLOQUES
+            Path pb = base.resolve("bloques.csv");
+            if (Files.exists(pb)) {
+                for (String line : Files.readAllLines(pb)) {
+                    if (line.trim().isEmpty()) continue;
+                    String[] p = line.split(",", -1);
+                    String codigoBloque = p[0];
+                    String fecha = p[1];
+                    String codigoAtr = p[2];
+                    String horaIni = p[3];
+                    String horaFin = p[4];
+                    String ruts = p.length > 5 ? p[5] : "";
+                    Atraccion a = buscarAtraccion(codigoAtr);
+                    if (a == null) continue;
+                    DiasActivosAnuales dia = getODia(fecha);
+                    BloqueDeAtraccion b = dia.addBloque(codigoBloque, a, new HorariosAtraccion(horaIni, horaFin));
+
+                    if (!ruts.isEmpty()) {
+                        for (String rut : ruts.split(";")) {
+                            Cliente c = buscarCliente(rut);
+                            if (c != null) b.addCliente(c);
+                        }
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Guardar en CSV (SIA 2.2)
+    public void guardarEnCSV(String dir) {
+        Path base = Paths.get(dir);
+        try {
+            if (!Files.exists(base)) Files.createDirectories(base);
+
+            // ATRACCIONES
+            Path pa = base.resolve("atracciones.csv");
+            try (BufferedWriter bw = Files.newBufferedWriter(pa)) {
+                for (Atraccion a : atracciones) {
+                    String line = String.join(",", a.getCodigoAtraccion(), a.getNombre(), a.getClasificacion(), String.valueOf(a.isActiva()), a.getDescripcion());
+                    bw.write(line); bw.newLine();
+                }
+            }
+
+            // CLIENTES
+            Path pc = base.resolve("clientes.csv");
+            try (BufferedWriter bw = Files.newBufferedWriter(pc)) {
+                for (Cliente c : clientes) {
+                    String line = String.join(",", c.getIdCliente(), c.getRut(), c.getNombre(), c.getFechaNacimiento());
+                    bw.write(line); bw.newLine();
+                }
+            }
+
+            // BLOQUES
+            Path pb = base.resolve("bloques.csv");
+            try (BufferedWriter bw = Files.newBufferedWriter(pb)) {
+                for (DiasActivosAnuales dia : diasPorFecha.values()) {
+                    for (BloqueDeAtraccion b : dia.getBloques()) {
+                        String ruts = b.getClientesParticipantes().stream().map(Cliente::getRut).collect(Collectors.joining(";"));
+                        String line = String.join(",", b.getCodigoBloque(), dia.getFecha(), b.getAtraccion().getCodigoAtraccion(), b.getHorario().getHoraInicio(), b.getHorario().getHoraFin(), ruts);
+                        bw.write(line); bw.newLine();
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    // generar reporte SIA  2.10
+    public void generarReporteTxt(String dir) {
+        Path base = Paths.get(dir);
+        Path report = base.resolve("reporte_parque.txt");
+        try (BufferedWriter bw = Files.newBufferedWriter(report, StandardCharsets.UTF_8)) {
+            bw.write("=== REPORTE FANTASILANDIA ===\n");
+            bw.write("Clientes: " + clientes.size() + "\n");
+            for (Cliente c : clientes) {
+                bw.write(c.toString() + "\n");
+            }
+            bw.write("\nAtracciones: " + atracciones.size() + "\n");
+            for (Atraccion a : atracciones) {
+                bw.write(a.toString() + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

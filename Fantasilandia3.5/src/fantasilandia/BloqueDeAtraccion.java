@@ -20,8 +20,9 @@ public class BloqueDeAtraccion {
     private Atraccion atraccion;
     private HorariosAtraccion horario;
     private List<Cliente> clientesParticipantes = new ArrayList<>();
-    private int capacidad = 20; // por defecto; puedes exponer setter para personalizar
+    private int capacidad = 20; // por defecto; se puede personalizar con los getters
 
+    //Constructor; SIA 2.9. Excepciones de formato
     public BloqueDeAtraccion(String fecha, String codigoBloque, Atraccion atraccion, HorariosAtraccion horario)
             throws FechaMalFormateadaException, BloqueMalFormateadoException, HorarioMalFormateadoException {
         setFecha(fecha);
@@ -30,6 +31,7 @@ public class BloqueDeAtraccion {
         setHorario(horario);
     }
 
+    //SIA 1.3
     // Getters
     public String getFecha() { return fecha; }
     public String getCodigoBloque() { return codigoBloque; }
@@ -46,6 +48,7 @@ public class BloqueDeAtraccion {
         this.fecha = fecha.trim();
     }
 
+    //Metodos
     public void setCodigoBloque(String codigoBloque) throws BloqueMalFormateadoException {
         if (codigoBloque == null) throw new BloqueMalFormateadoException("Código de bloque vacío");
         codigoBloque = codigoBloque.trim();
@@ -66,17 +69,20 @@ public class BloqueDeAtraccion {
 
     // Agregar cliente con control de duplicados y capacidad
     public void addCliente(Cliente c) throws BloqueMalFormateadoException {
-        if (c == null) return;
-        if (clientesParticipantes.contains(c)) return; // ya inscrito
-        if (clientesParticipantes.size() >= capacidad) {
-            throw new BloqueMalFormateadoException("Bloque " + codigoBloque + " ha alcanzado su capacidad (" + capacidad + ")");
+        if (c != null) {
+            if (!this.clientesParticipantes.contains(c)) {
+                if (this.clientesParticipantes.size() >= this.capacidad) {
+                    throw new BloqueMalFormateadoException("Bloque " + this.codigoBloque + " ha alcanzado su capacidad (" + this.capacidad + ")");
+                } else {
+                    this.clientesParticipantes.add(c);
+                }
+            }
         }
-        clientesParticipantes.add(c);
     }
 
     // Eliminar cliente por RUT (útil para menús)
     public boolean removeClientePorRut(String rut) {
-        return clientesParticipantes.removeIf(cc -> cc.getRut().equals(rut));
+        return this.clientesParticipantes.removeIf((cc) -> cc.getRut().equals(rut));
     }
 
     private void validarFecha(String fecha) throws FechaMalFormateadaException {
@@ -87,8 +93,32 @@ public class BloqueDeAtraccion {
         }
     }
 
+    //Se utiliza para comparar si dos bloques son iguales o no
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BloqueDeAtraccion)) return false;
+        BloqueDeAtraccion other = (BloqueDeAtraccion) o;
+        // Comparar por código de bloque (case-insensitive) y por fecha (ambos deben coincidir)
+        if (this.codigoBloque == null || other.codigoBloque == null) return false;
+        boolean codigoIgual = this.codigoBloque.equalsIgnoreCase(other.codigoBloque);
+        boolean fechaIgual = (this.fecha == null ? other.fecha == null : this.fecha.equals(other.fecha));
+        return codigoIgual && fechaIgual;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + (codigoBloque == null ? 0 : codigoBloque.toLowerCase().hashCode());
+        result = 31 * result + (fecha == null ? 0 : fecha.hashCode());
+        return result;
+    }
+
+
     @Override
     public String toString() {
         return String.format("Bloque[%s] %s %s (%d clientes)", codigoBloque, fecha, horario == null ? "NO-HORARIO" : horario.toString(), clientesParticipantes.size());
     }
+
+
 }

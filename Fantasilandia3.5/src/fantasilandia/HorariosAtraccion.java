@@ -11,7 +11,8 @@ import Excepciones.HorarioMalFormateadoException;
 public class HorariosAtraccion {
     private String horaInicio; // "HH:mm"
     private String horaFin;    // "HH:mm"
-
+    
+    //SIA 2.9 Aplicacion de Excepciones
     public HorariosAtraccion(String horaInicio, String horaFin) throws HorarioMalFormateadoException {
         setHoraInicio(horaInicio);
         setHoraFin(horaFin);
@@ -42,7 +43,7 @@ public class HorariosAtraccion {
             throw new HorarioMalFormateadoException("El horario no cumple el formato HH:mm: " + horario);
         }
     }
-
+    //SIA 2.9- 2.8 Salto de try-catch con excepciones.
     private void validarOrden() throws HorarioMalFormateadoException {
         try {
             LocalTime inicio = LocalTime.parse(horaInicio);

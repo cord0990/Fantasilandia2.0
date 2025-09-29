@@ -1,6 +1,5 @@
 package GUI;
 
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -11,132 +10,114 @@ import Excepciones.HorarioMalFormateadoException;
 import Excepciones.RutMalFormateadoException;
 
 import javax.swing.JLabel;
-import java.awt.Font;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
 import javax.swing.JOptionPane;
 
-//Carpetas para chekear la existencia de los archivos
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
-//para las imagenes
 import javax.swing.*;
 import java.awt.*;
 
-// Importar las clases del modelo
+// Modelo
 import fantasilandia.*;
+// Persistencia
+import persistencia.PersistenceBridge;
 
+import java.awt.EventQueue;
+
+//=======SIA 2.3 VENTANA SWING PARA MENU PRINCIPAL=======
 public class MenuPrincipal extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    private Fantasilandia parque; // Instancia compartida del sistema
-
-    //lblInfo como campo para poder refrescarlo al cerrar subventanas
+    private Fantasilandia parque;
     private JLabel lblInfo;
+    private Path dataDir;
 
 
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    MenuPrincipal frame = new MenuPrincipal();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-    /**
-     * Create the frame.
-     * @throws BloqueMalFormateadoException
-     * @throws HorarioMalFormateadoException
-     * @throws FechaMalFormateadaException
-     * @throws RutMalFormateadoException
-     */
-    public MenuPrincipal() throws RutMalFormateadoException, FechaMalFormateadaException, HorarioMalFormateadoException, BloqueMalFormateadoException {
-        // Inicializar el sistema Fantasilandia
-        parque = new Fantasilandia(true); // Con datos de ejemplo
+    //======SIA 2.9. Utilizacion de Excepciones==========
+    public MenuPrincipal() throws RutMalFormateadoException, FechaMalFormateadaException,
+            HorarioMalFormateadoException, BloqueMalFormateadoException {
 
-        // Intentar cargar datos existentes
+        dataDir = PersistenceBridge.getDataDir();
+        parque = new Fantasilandia(true);
+
         try {
-            if (Files.exists(Paths.get("data"))) {
-                parque.cargarDesdeCSV("data");
-            } else {
-                System.out.println("No hay datos previos, se usarán datos de ejemplo.");
+            boolean loaded = PersistenceBridge.loadFromCsv(parque);
+            if (!loaded) {
+                System.out.println("[INFO] No se cargaron CSV. Se mantienen datos de ejemplo.");
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                    "Ocurrió un problema al cargar datos previos.\nSe usarán datos de ejemplo.\nDetalle: " + e.getMessage(),
-                    "Aviso de carga", JOptionPane.WARNING_MESSAGE);
+        } catch (Exception ex) {
+            System.err.println("[WARN] Error cargando CSV: " + ex.getMessage());
         }
+
         initComponents();
     }
 
-    /**
-     * Constructor que acepta una instancia existente de Fantasilandia
-     */
+    //Constructor
     public MenuPrincipal(Fantasilandia parqueExistente) {
         this.parque = parqueExistente;
+        this.dataDir = PersistenceBridge.getDataDir();
         initComponents();
     }
 
     private void initComponents() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 900, 600);
-        // Usa el panel con fondo
-        contentPane = new BackgroundPanel();
+        contentPane = new BackgroundPanel(); // ← mantiene el fondo
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        setTitle("Sistema de Administracion de parque tematico");
+        setTitle("Sistema de Administración de parque temático");
         setResizable(false);
         setLocationRelativeTo(null);
 
-        // Menú superior (Archivo: Guardar, Reporte, Salir)
         setJMenuBar(buildMenuBar());
 
-        //creacion de titulo
         JLabel Titulo = new JLabel("Sistema Administrativo de Fantasilandia");
         Titulo.setHorizontalAlignment(SwingConstants.CENTER);
-        Titulo.setBounds(55, 20, 700, 84);
+        Titulo.setBounds(55, 20, 780, 60);
         Titulo.setFont(new Font("Comic Sans MS", Font.PLAIN, 28));
         contentPane.add(Titulo);
 
-        //Botones
-        JButton IngresoClientes = new JButton("Gestion de Clientes");
+        // ===== Botones principales =====
+        JButton IngresoClientes = new JButton("Gestión de Clientes");
         IngresoClientes.setFont(new Font("Tw Cen MT", Font.PLAIN, 23));
         IngresoClientes.addActionListener(e -> abrirMenuClientes());
         IngresoClientes.setBounds(15, 117, 355, 70);
         contentPane.add(IngresoClientes);
 
-        JButton IngresoAtracciones = new JButton("Gestion de Atracciones");
+        JButton IngresoAtracciones = new JButton("Gestión de Atracciones");
         IngresoAtracciones.setFont(new Font("Tw Cen MT", Font.PLAIN, 23));
         IngresoAtracciones.addActionListener(e -> abrirMenuAtracciones());
-        IngresoAtracciones.setBounds(15, 200, 355, 70);
+        IngresoAtracciones.setBounds(15, 198, 355, 70);
         contentPane.add(IngresoAtracciones);
 
-        JButton IngresoHorarios = new JButton("Gestion de Horarios");
-        IngresoHorarios.setFont(new Font("Tw Cen MT", Font.PLAIN, 23));
-        IngresoHorarios.addActionListener(e -> abrirMenuHorarios());
-        IngresoHorarios.setBounds(15, 280, 355, 70);
-        contentPane.add(IngresoHorarios);
-
-        JButton IngresoBloques = new JButton("Gestion de Bloques");
+        /*======Menu bloques primitivo, insertar en caso de necesitar constancia de todos los bloques en un solo menu=======
+        JButton IngresoBloques = new JButton("Gestión de Bloques ");
         IngresoBloques.setFont(new Font("Tw Cen MT", Font.PLAIN, 23));
         IngresoBloques.addActionListener(e -> abrirMenuBloques());
-        IngresoBloques.setBounds(15, 360, 355, 70);
+        IngresoBloques.setBounds(15, 279, 355, 70);
         contentPane.add(IngresoBloques);
+        */
 
-        // Botón Guardar (batch out)
+        JButton IngresoDias = new JButton("Gestión de Días");
+        IngresoDias.setFont(new Font("Tw Cen MT", Font.PLAIN, 23));
+        IngresoDias.addActionListener(e -> abrirMenuDias());
+        IngresoDias.setBounds(15, 279, 355, 70); // ajusta y coordina con tu layout
+        contentPane.add(IngresoDias);
+
+        // Botón para abrir el menú de reportes
+        JButton btnGestinDeReportes = new JButton("Gestión de Reportes/Estadisticas");
+        btnGestinDeReportes.setFont(new Font("Tw Cen MT", Font.PLAIN, 23));
+        btnGestinDeReportes.setBounds(15, 360, 355, 70);  // Ajusta la posición según tu preferencia
+        btnGestinDeReportes.addActionListener(e -> abrirMenuReportes());
+        contentPane.add(btnGestinDeReportes);
+
+        // Botón Guardar
         JButton btnGuardar = new JButton("Guardar Datos");
         btnGuardar.setFont(new Font("Tw Cen MT", Font.PLAIN, 16));
         btnGuardar.addActionListener(e -> guardarDatos());
@@ -149,23 +130,21 @@ public class MenuPrincipal extends JFrame {
         btnReporte.addActionListener(e -> {
             try {
                 ensureDataDir();
-                parque.generarReporteTxt("data");  // genera reporte.txt en carpeta data
-                JOptionPane.showMessageDialog(this, "Reporte generado con éxito en data/reporte.txt");
+                parque.generarReporteTxt(dataDir.toString());
+                JOptionPane.showMessageDialog(this,
+                    "Reporte generado con éxito en: " + dataDir.resolve("reporte_parque.txt"));
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error al generar el reporte: " + ex.getMessage());
             }
         });
-        //consistencia (usar contentPane.add, no getContentPane().add)
         contentPane.add(btnReporte);
 
-        // Agregar información del sistema
-        JLabel lblInfo = new JLabel();
+        lblInfo = new JLabel();
         actualizarInfoSistema(lblInfo);
         lblInfo.setFont(new Font("Tahoma", Font.PLAIN, 11));
         lblInfo.setBounds(10, 468, 500, 35);
         contentPane.add(lblInfo);
 
-        // Configurar cierre con guardado automático
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -179,10 +158,7 @@ public class MenuPrincipal extends JFrame {
             }
         });
     }
-
-    // ===== Helpers de UI =====
-
-    // Menú superior
+    //Opciones inferiores
     private javax.swing.JMenuBar buildMenuBar() {
         javax.swing.JMenuBar mb = new javax.swing.JMenuBar();
 
@@ -195,73 +171,128 @@ public class MenuPrincipal extends JFrame {
         miReporte.addActionListener(e -> {
             try {
                 ensureDataDir();
-                parque.generarReporteTxt("data");
-                JOptionPane.showMessageDialog(this, "Reporte generado en data/reporte.txt");
+                parque.generarReporteTxt(dataDir.toString());
+                JOptionPane.showMessageDialog(this,
+                    "Reporte generado en: " + dataDir.resolve("reporte_parque.txt"));
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
             }
         });
         miSalir.addActionListener(e ->
-                dispatchEvent(new java.awt.event.WindowEvent(this, java.awt.event.WindowEvent.WINDOW_CLOSING))
+            dispatchEvent(new java.awt.event.WindowEvent(this, java.awt.event.WindowEvent.WINDOW_CLOSING))
         );
 
         archivo.add(miGuardar);
         archivo.add(miReporte);
         archivo.addSeparator();
         archivo.add(miSalir);
-        mb.add(archivo);
 
+        mb.add(archivo);
         return mb;
     }
 
-    // Mostrar subventana y refrescar lblInfo al cerrarla
-    private void mostrarYRefrescar(JFrame frame) {
-        frame.setLocationRelativeTo(this);
-        frame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override public void windowClosed(java.awt.event.WindowEvent e) {
-                actualizarInfoSistema(lblInfo);
+    //=== SIA 2.2 UTILIZACION DE PERSISTENCIA DE DATOS====
+    private void ensureDataDir() {
+        try {
+            if (dataDir == null) dataDir = PersistenceBridge.getDataDir();
+            if (dataDir != null && !Files.exists(dataDir)) {
+                Files.createDirectories(dataDir);
             }
-            @Override public void windowClosing(java.awt.event.WindowEvent e) {
-                actualizarInfoSistema(lblInfo);
-            }
-        });
-        frame.setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "No se pudo crear carpeta 'data': " + e.getMessage(),
+                "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
-    // Asegurar carpeta data/ antes de escribir
-    private void ensureDataDir() throws java.io.IOException {
-        java.nio.file.Files.createDirectories(java.nio.file.Paths.get("data"));
-    }
-
-
+    // Refrescar el estado al volver de subventanas
     private void abrirMenuClientes() {
-        MenuClientesGui menuClientes = new MenuClientesGui(parque);
-        menuClientes.setVisible(true);
+        var w = new MenuClientesGui(parque, this); // pasa el owner
+        w.setSize(800, 600);                       // tamaño que diseñaste para Clientes
+        w.setLocationRelativeTo(this);             // centrado relativo
+        setVisible(false);                         // oculta el principal
+        w.setVisible(true);
     }
 
     private void abrirMenuAtracciones() {
-        MenuAtraccionesGui menuAtracciones = new MenuAtraccionesGui(parque);
-        menuAtracciones.setVisible(true);
+        var w = new MenuAtraccionesGui(parque, this);
+        w.setLocation(getLocation());
+        w.setResizable(isResizable());
+        setVisible(false);
+        w.setVisible(true);
     }
 
-    private void abrirMenuHorarios() {
-        MenuHorariosGui menuHorarios = new MenuHorariosGui(parque);
-        menuHorarios.setVisible(true);
+    private void abrirMenuReportes() {
+        MenuReportes menuReportes = new MenuReportes(parque);
+        menuReportes.setVisible(true);
+        dispose();  // Cierra el MenuPrincipal
     }
 
-    private void abrirMenuBloques() {
-        MenuBloquesGui menuBloques = new MenuBloquesGui(parque);
-        menuBloques.setVisible(true);
-    }
+     // === Apertura de Días (tolerante a nombre/clase)
+     // === SIA 2.8. UTILIZACION DE TRY CATCH PARA ERRORES: SI NO PUEDE ACCEDER A LA INFORMACION MANDA ERROR.
+     private void abrirMenuDias() {
+         // Intentar GUI.MenuDiasGui con (Fantasilandia, JFrame)
+         try {
+             Class<?> k = Class.forName("GUI.MenuDiasGui");
+             try {
+                 var ctor = k.getConstructor(fantasilandia.Fantasilandia.class, javax.swing.JFrame.class);
+                 java.awt.Window w = (java.awt.Window) ctor.newInstance(parque, this);
+                 setVisible(false);
+                 w.setVisible(true);
+                 return;
+             } catch (NoSuchMethodException ignore) {
+                 // ctor sin owner
+                 var ctor = k.getConstructor(fantasilandia.Fantasilandia.class);
+                 java.awt.Window w = (java.awt.Window) ctor.newInstance(parque);
+                 setVisible(false);
+                 // si no hay owner, MenuDiasGui debe tener botón Volver que haga new MenuPrincipal(...)
+                 w.setVisible(true);
+                 return;
+             }
+         } catch (Throwable ignore) {
+             try {
+                 Class<?> k2 = Class.forName("GUI.DiasGui");
+                 try {
+                     var ctor2 = k2.getConstructor(fantasilandia.Fantasilandia.class, javax.swing.JFrame.class);
+                     java.awt.Window w2 = (java.awt.Window) ctor2.newInstance(parque, this);
+                     setVisible(false);
+                     w2.setVisible(true);
+                     return;
+                 } catch (NoSuchMethodException ignore2) {
+                     var ctor2 = k2.getConstructor(fantasilandia.Fantasilandia.class);
+                     java.awt.Window w2 = (java.awt.Window) ctor2.newInstance(parque);
+                     setVisible(false);
+                     w2.setVisible(true);
+                     return;
+                 }
+             } catch (Throwable ignore3) { }
+         }
 
-    // ===== Persistencia =====
+         // 3) Fallback: abrir Bloques (sin owner)
+         try {
+             MenuBloquesGui menuBloques = new MenuBloquesGui(parque);
+             setVisible(false);
+             menuBloques.setVisible(true);
+         } catch (Throwable t) {
+             JOptionPane.showMessageDialog(this,
+                     "No se pudo abrir el menú de Días ni el fallback de Bloques.\n" +
+                             "Detalle: " + t.getClass().getSimpleName() + " - " + String.valueOf(t.getMessage()),
+                     "Error", JOptionPane.ERROR_MESSAGE);
+         }
+     }
     private void guardarDatos() {
         try {
-            ensureDataDir(); // ← agregar
-            parque.guardarEnCSV("data");
-            JOptionPane.showMessageDialog(this,
-                    "Datos guardados exitosamente en carpeta 'data'",
-                    "Guardado exitoso", JOptionPane.INFORMATION_MESSAGE);
+            ensureDataDir();
+            boolean ok = PersistenceBridge.saveToCsv(parque);
+            if (ok) {
+                JOptionPane.showMessageDialog(this,
+                        "Datos guardados en: " + dataDir.toAbsolutePath(),
+                        "Guardado exitoso", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudieron guardar los datos (revisar consola).",
+                        "Advertencia", JOptionPane.WARNING_MESSAGE);
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
                     "Error al guardar datos: " + e.getMessage(),
@@ -269,7 +300,6 @@ public class MenuPrincipal extends JFrame {
         }
     }
 
-    // ===== Status =====
     private void actualizarInfoSistema(JLabel lblInfo) {
         String info = String.format("Clientes: %d | Atracciones: %d | Días activos: %d",
                 parque.contarClientes(),
@@ -278,26 +308,63 @@ public class MenuPrincipal extends JFrame {
         lblInfo.setText(info);
     }
 
-    // Getter para obtener la instancia de Fantasilandia
-    public Fantasilandia getParque() {
-        return parque;
-    }
-
-    //Clase para generar la imagen de fondo del Menu
-    class BackgroundPanel extends JPanel {
-        private final Image bg;
+ // ===== Panel con fondo (rutas originales restauradas) =====
+    private static class BackgroundPanel extends JPanel {
+        /**
+		 *
+		 */
+		private static final long serialVersionUID = 1L;
+		private Image bg;
 
         BackgroundPanel() {
-            // Carga desde el classpath (resources root)
-            bg = new ImageIcon(getClass().getResource("/MenuCanvav2.jpg")).getImage();
             setOpaque(false);
+
+            // 1) rutas originales en el CLASSPATH
+            java.net.URL imgURL = getClass().getResource("/resources/MenuCanvav2.jpg");
+            if (imgURL == null) {
+                // Compatibilidad: raíz del classpath
+                imgURL = getClass().getResource("/MenuCanvav2.jpg");
+            }
+
+            if (imgURL != null) {
+                bg = new ImageIcon(imgURL).getImage();
+            } else {
+                // 2) Tus fallbacks a DISCO (cuando ejecutas desde IDE sin empacar recursos)
+                java.nio.file.Path[] fsCandidates = new java.nio.file.Path[] {
+                    java.nio.file.Paths.get("src", "resources", "MenuCanvav2.jpg"),
+                    java.nio.file.Paths.get("resources", "MenuCanvav2.jpg"),
+                    java.nio.file.Paths.get("MenuCanvav2.jpg")
+                };
+                boolean loaded = false;
+                for (java.nio.file.Path p : fsCandidates) {
+                    if (java.nio.file.Files.exists(p)) {
+                        bg = new ImageIcon(p.toString()).getImage();
+                        loaded = true;
+                        break;
+                    }
+                }
+
+                if (!loaded) {
+                    System.err.println("⚠ No se encontró 'MenuCanvav2.jpg' en classpath ni en src/resources/");
+                    // 3) Fallback opcional a tu 'MenuDefault.jpg' (también según tu código original)
+                    java.net.URL fall = getClass().getResource("/resources/MenuDefault.jpg");
+                    if (fall == null) fall = getClass().getResource("/MenuDefault.jpg");
+                    if (fall != null) {
+                        bg = new ImageIcon(fall).getImage();
+                    } else {
+                        bg = null; // evita NPE en paintComponent
+                    }
+                }
+            }
         }
 
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            // Dibuja la imagen escalada al tamaño del panel
-            g.drawImage(bg, 0, 0, getWidth(), getHeight(), this);
+            if (bg != null) {
+                g.drawImage(bg, 0, 0, getWidth(), getHeight(), this);
+            }
         }
     }
+
 }

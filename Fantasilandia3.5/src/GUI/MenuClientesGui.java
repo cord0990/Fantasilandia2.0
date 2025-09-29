@@ -19,6 +19,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
+import javax.swing.JCheckBox; // === VIP ===
 
 //importar para el reporte de clientes
 import java.nio.file.*;
@@ -27,14 +28,16 @@ import java.io.BufferedWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.awt.Desktop;
-
-
+import java.time.LocalDate;
+import java.time.Period;
 
 // Importar las clases del modelo
 import fantasilandia.*;
 
+//=======SIA 2.3 VENTANA SWING PARA MENU CLIENTES=======
 public class MenuClientesGui extends JFrame {
 
+    private final JFrame owner;
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JTable table;
@@ -42,31 +45,13 @@ public class MenuClientesGui extends JFrame {
     private Fantasilandia parque;
     private JTextField txtBuscar;
 
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    Fantasilandia parque = new Fantasilandia();
-                    MenuClientesGui frame = new MenuClientesGui(parque);
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    /**
-     * Create the frame.
-     */
-    public MenuClientesGui(Fantasilandia parque) {
+    //Crea la tabla
+    public MenuClientesGui(Fantasilandia parque, JFrame owner) {
         this.parque = parque;
+        this.owner  = owner;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 800, 600);
+        setBounds(100, 100, 1100, 600); // un poco más ancho por columnas VIP
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -75,20 +60,18 @@ public class MenuClientesGui extends JFrame {
         setTitle("Gestión de Clientes - Fantasilandia");
         setLocationRelativeTo(null);
 
-        // Configurar tabla con modelo personalizado
-        String[] columnNames = {"ID Cliente", "Nombre", "RUT", "Fecha Nacimiento"};
+        // === VIP === columnas extra: VIP y Beneficio
+        String[] columnNames = {"ID Cliente", "Nombre", "RUT", "Fecha Nacimiento", "VIP", "Beneficio"};
         tableModel = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Hacer tabla no editable directamente
-            }
+            private static final long serialVersionUID = 1L;
+            @Override public boolean isCellEditable(int row, int column) { return false; }
         };
 
         table = new JTable(tableModel);
         table.getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(10, 60, 480, 480);
+        scrollPane.setBounds(10, 42, 620, 464);
         contentPane.add(scrollPane);
 
         JButton btnAgregar = new JButton("Agregar Cliente");
@@ -96,16 +79,12 @@ public class MenuClientesGui extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     agregarCliente();
-                } catch (RutMalFormateadoException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                } catch (FechaMalFormateadaException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
+                } catch (RutMalFormateadoException | FechaMalFormateadaException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
-        btnAgregar.setBounds(520, 120, 190, 50);
+        btnAgregar.setBounds(650, 74, 220, 50);
         contentPane.add(btnAgregar);
 
         JButton btnEliminar = new JButton("Eliminar Cliente");
@@ -114,7 +93,7 @@ public class MenuClientesGui extends JFrame {
                 eliminarCliente();
             }
         });
-        btnEliminar.setBounds(520, 180, 190, 50);
+        btnEliminar.setBounds(650, 134, 220, 50);
         contentPane.add(btnEliminar);
 
         JButton btnModificar = new JButton("Modificar Cliente");
@@ -122,13 +101,12 @@ public class MenuClientesGui extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     modificarCliente();
-                } catch (FechaMalFormateadaException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
+                } catch (FechaMalFormateadaException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
-        btnModificar.setBounds(520, 240, 190, 50);
+        btnModificar.setBounds(650, 194, 220, 50);
         contentPane.add(btnModificar);
 
         JButton btnBuscar = new JButton("Buscar por RUT");
@@ -137,28 +115,28 @@ public class MenuClientesGui extends JFrame {
                 buscarCliente();
             }
         });
-        btnBuscar.setBounds(520, 470, 190, 50);
+        btnBuscar.setBounds(650, 424, 220, 50);
         contentPane.add(btnBuscar);
 
         JLabel TituloVentana = new JLabel("Gestión de Clientes");
         TituloVentana.setHorizontalAlignment(SwingConstants.CENTER);
         TituloVentana.setFont(new Font("Tw Cen MT Condensed", Font.PLAIN, 32));
-        TituloVentana.setBounds(520, 20, 190, 60);
+        TituloVentana.setBounds(650, 20, 220, 60);
         contentPane.add(TituloVentana);
 
         // Campo de búsqueda
         txtBuscar = new JTextField();
-        txtBuscar.setBounds(520, 434, 190, 25);
+        txtBuscar.setBounds(650, 388, 220, 25);
         contentPane.add(txtBuscar);
         txtBuscar.setColumns(10);
 
         JLabel lblBuscar = new JLabel("RUT a buscar:");
-        lblBuscar.setBounds(520, 403, 100, 20);
+        lblBuscar.setBounds(650, 357, 120, 20);
         contentPane.add(lblBuscar);
 
         JButton btnReporte = new JButton("Reporte (Escritorio)");
         btnReporte.addActionListener(e -> generarReporteClientesEnEscritorio());
-        btnReporte.setBounds(520, 520, 190, 40); // debajo del botón Buscar
+        btnReporte.setBounds(10, 510, 190, 40);
         contentPane.add(btnReporte);
 
         JButton btnActualizar = new JButton("Actualizar Lista");
@@ -167,55 +145,71 @@ public class MenuClientesGui extends JFrame {
                 cargarClientes();
             }
         });
-        btnActualizar.setBounds(520, 301, 190, 40);
+        btnActualizar.setBounds(650, 255, 220, 40);
         contentPane.add(btnActualizar);
-
-        JButton btnMostrarTodos = new JButton("Mostrar Todos");
-        btnMostrarTodos.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                mostrarTodosLosClientes();
-            }
-        });
-        btnMostrarTodos.setBounds(520, 352, 190, 40);
-        contentPane.add(btnMostrarTodos);
 
         // Etiqueta con información
         JLabel lblInfo = new JLabel("Total de clientes: 0");
-        lblInfo.setBounds(10, 30, 300, 20);
+        lblInfo.setBounds(10, 11, 300, 20);
         contentPane.add(lblInfo);
 
         // Cargar datos iniciales
         cargarClientes();
         actualizarInfo();
+
+        // --- VOLVER ---
+        JButton btnVolver = new JButton("Volver");
+        btnVolver.addActionListener(e -> {
+            if (owner != null) owner.setVisible(true);
+            dispose();
+        });
+        btnVolver.setBounds(650, 485, 220, 40);
+        contentPane.add(btnVolver);
+
+        // Al cerrar con la X, vuelve a mostrar el principal
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override public void windowClosed(java.awt.event.WindowEvent e) {
+                if (owner != null) owner.setVisible(true);
+            }
+        });
     }
 
     private void cargarClientes() {
-        // Limpiar tabla
         tableModel.setRowCount(0);
-
-        // Obtener lista de clientes desde Fantasilandia
         for (Cliente cliente : parque.getClientes()) {
+            // === VIP === detectar y mostrar
+            boolean esVip = (cliente instanceof ClienteVIP) && ((ClienteVIP) cliente).isVip();
+            String beneficio = (cliente instanceof ClienteVIP) ? ((ClienteVIP) cliente).getBeneficio() : "-";
+
             Object[] row = {
                     cliente.getIdCliente(),
                     cliente.getNombre(),
                     cliente.getRut(),
-                    cliente.getFechaNacimiento()
+                    cliente.getFechaNacimiento(),
+                    esVip ? "Sí" : "No",
+                    beneficio
             };
             tableModel.addRow(row);
         }
         actualizarInfo();
     }
 
+    //Agrega un cliente (normal o VIP). ==SIA 2.9 excepciones==
     private void agregarCliente() throws RutMalFormateadoException, FechaMalFormateadaException {
-        // Crear panel de entrada de datos
         JTextField txtNombre = new JTextField();
         JTextField txtRut = new JTextField();
         JTextField txtFechaNacimiento = new JTextField();
+        // === VIP ===
+        JCheckBox chkVip = new JCheckBox("VIP");
+        JTextField txtBeneficio = new JTextField("20% de descuento por persona");
 
         Object[] message = {
                 "Nombre:", txtNombre,
                 "RUT:", txtRut,
-                "Fecha de Nacimiento (YYYY-MM-DD):", txtFechaNacimiento
+                "Fecha de Nacimiento (YYYY-MM-DD):", txtFechaNacimiento,
+                // === VIP ===
+                chkVip,
+                "Beneficio (si VIP):", txtBeneficio
         };
 
         int option = JOptionPane.showConfirmDialog(
@@ -225,33 +219,26 @@ public class MenuClientesGui extends JFrame {
             String nombre = txtNombre.getText().trim();
             String rut = txtRut.getText().trim();
             String fecha = txtFechaNacimiento.getText().trim();
-
-            if (nombre.isEmpty() || rut.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Nombre y RUT son obligatorios",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Verificar si el cliente ya existe
-            if (parque.buscarCliente(rut) != null) {
-                JOptionPane.showMessageDialog(this, "Ya existe un cliente con ese RUT",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Generar ID automático
             String id = "CLI" + String.format("%03d", parque.contarClientes() + 1);
 
-            // Crear y agregar cliente
-            Cliente nuevoCliente = new Cliente(nombre, rut, id, fecha);
-            parque.addCliente(nuevoCliente);
-
-            // Actualizar tabla
-            cargarClientes();
-
-            JOptionPane.showMessageDialog(this,
-                    "Cliente agregado exitosamente con ID: " + id,
-                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                Cliente nuevoCliente;
+                if (chkVip.isSelected()) {
+                    String beneficio = txtBeneficio.getText();
+                    nuevoCliente = new ClienteVIP(nombre, rut, id, fecha, beneficio);
+                } else {
+                    nuevoCliente = new Cliente(nombre, rut, id, fecha);
+                }
+                parque.addCliente(nuevoCliente);
+                cargarClientes();
+                JOptionPane.showMessageDialog(this,
+                        "Cliente agregado exitosamente con ID: " + id,
+                        "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this,
+                        "Error al agregar cliente: " + e.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -282,6 +269,8 @@ public class MenuClientesGui extends JFrame {
         }
     }
 
+    // Modifica un cliente existente; si es VIP, permite editar beneficio/activar.
+// Si NO es VIP, permite convertirlo a VIP manteniendo su mismo RUT e ID.
     private void modificarCliente() throws FechaMalFormateadaException {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
@@ -299,39 +288,96 @@ public class MenuClientesGui extends JFrame {
             return;
         }
 
-        // Pre-llenar campos con datos actuales
+        // Campos comunes
         JTextField txtNombre = new JTextField(cliente.getNombre());
         JTextField txtFechaNacimiento = new JTextField(cliente.getFechaNacimiento());
 
-        Object[] message = {
-                "Nombre:", txtNombre,
-                "Fecha de Nacimiento (YYYY-MM-DD):", txtFechaNacimiento,
-                "Nota: El RUT no se puede modificar"
-        };
+        // Elementos VIP
+        boolean esVip = (cliente instanceof ClienteVIP);
+        JCheckBox chkVipActivo = new JCheckBox("VIP activo");
+        JTextField txtBeneficio = new JTextField();
+
+        // Elementos para conversión a VIP cuando el cliente NO es VIP
+        JCheckBox chkConvertirAVip = new JCheckBox("Convertir a VIP");
+        JTextField txtBeneficioNuevo = new JTextField("20% de descuento por persona");
+
+        Object[] message;
+        if (esVip) {
+            ClienteVIP cv = (ClienteVIP) cliente;
+            chkVipActivo.setSelected(cv.isVip());
+            txtBeneficio.setText(cv.getBeneficio());
+
+            message = new Object[] {
+                    "Nombre:", txtNombre,
+                    "Fecha de Nacimiento (YYYY-MM-DD):", txtFechaNacimiento,
+                    "Nota: El RUT no se puede modificar",
+                    chkVipActivo,
+                    "Beneficio:", txtBeneficio
+            };
+        } else {
+            message = new Object[] {
+                    "Nombre:", txtNombre,
+                    "Fecha de Nacimiento (YYYY-MM-DD):", txtFechaNacimiento,
+                    "Nota: El RUT no se puede modificar",
+                    chkConvertirAVip,
+                    "Beneficio (si conviertes a VIP):", txtBeneficioNuevo
+            };
+        }
 
         int option = JOptionPane.showConfirmDialog(
                 this, message, "Modificar Cliente", JOptionPane.OK_CANCEL_OPTION);
 
-        if (option == JOptionPane.OK_OPTION) {
-            String nuevoNombre = txtNombre.getText().trim();
-            String nuevaFecha = txtFechaNacimiento.getText().trim();
+        if (option != JOptionPane.OK_OPTION) return;
 
-            if (!nuevoNombre.isEmpty()) {
-                cliente.setNombre(nuevoNombre);
-            }
-            if (!nuevaFecha.isEmpty()) {
-                try {
-                    cliente.setFechaNacimiento(nuevaFecha);
-                } catch (FechaMalFormateadaException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
+        // 1) Actualizar datos comunes
+        String nuevoNombre = txtNombre.getText().trim();
+        String nuevaFecha = txtFechaNacimiento.getText().trim();
 
-            cargarClientes();
-            JOptionPane.showMessageDialog(this, "Cliente actualizado exitosamente",
-                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        if (!nuevoNombre.isEmpty()) {
+            cliente.setNombre(nuevoNombre);
         }
+        if (!nuevaFecha.isEmpty()) {
+            try {
+                cliente.setFechaNacimiento(nuevaFecha);
+            } catch (FechaMalFormateadaException e) {
+                JOptionPane.showMessageDialog(this,
+                        "Fecha inválida: " + e.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
+        // 2) Actualizar/convertir VIP
+        if (esVip) {
+            // Actualizar flags/beneficio del VIP existente
+            ClienteVIP cv = (ClienteVIP) cliente;
+            cv.setVip(chkVipActivo.isSelected());
+            cv.setBeneficio(txtBeneficio.getText());
+        } else if (chkConvertirAVip.isSelected()) {
+            // Convertir a VIP conservando RUT e ID
+            try {
+                ClienteVIP vip = new ClienteVIP(
+                        cliente.getNombre(),
+                        cliente.getRut(),
+                        cliente.getIdCliente(),
+                        cliente.getFechaNacimiento(),
+                        txtBeneficioNuevo.getText()
+                );
+                // Reemplazo en la capa de datos
+                parque.eliminarCliente(cliente.getRut());
+                parque.addCliente(vip);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudo convertir a VIP: " + ex.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
+        // 3) Refrescar UI
+        cargarClientes();
+        JOptionPane.showMessageDialog(this, "Cliente actualizado exitosamente",
+                "Éxito", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void buscarCliente() {
@@ -349,27 +395,24 @@ public class MenuClientesGui extends JFrame {
             return;
         }
 
-        // Mostrar solo el cliente encontrado
         tableModel.setRowCount(0);
+
+        boolean esVip = (cliente instanceof ClienteVIP) && ((ClienteVIP) cliente).isVip();
+        String beneficio = (cliente instanceof ClienteVIP) ? ((ClienteVIP) cliente).getBeneficio() : "-";
+
         Object[] row = {
                 cliente.getIdCliente(),
                 cliente.getNombre(),
                 cliente.getRut(),
-                cliente.getFechaNacimiento()
+                cliente.getFechaNacimiento(),
+                esVip ? "Sí" : "No",
+                beneficio
         };
         tableModel.addRow(row);
-
-        // Seleccionar la fila
         table.setRowSelectionInterval(0, 0);
     }
 
-    private void mostrarTodosLosClientes() {
-        txtBuscar.setText("");
-        cargarClientes();
-    }
-
     private void actualizarInfo() {
-        // Actualizar etiqueta de información
         for (java.awt.Component comp : contentPane.getComponents()) {
             if (comp instanceof JLabel && ((JLabel) comp).getText().startsWith("Total")) {
                 ((JLabel) comp).setText("Total de clientes: " + parque.contarClientes());
@@ -392,11 +435,24 @@ public class MenuClientesGui extends JFrame {
         if (os.contains("win")) {
             new ProcessBuilder("notepad.exe", archivo.toString()).start();
         } else if (Desktop.isDesktopSupported()) {
-            Desktop.getDesktop().open(archivo.toFile()); // macOS/Linux: app por defecto
+            Desktop.getDesktop().open(archivo.toFile());
         }
     }
 
     // -------- Genera el TXT en el Escritorio y lo abre --------
+
+    private Integer edadSegura(String fechaStr) {
+        if (fechaStr == null || fechaStr.isEmpty()) return null;
+        try {
+            LocalDate fn = LocalDate.parse(fechaStr);
+            LocalDate hoy = LocalDate.now();
+            if (fn.isAfter(hoy)) return null;
+            return Period.between(fn, hoy).getYears();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     private void generarReporteClientesEnEscritorio() {
         try {
             Path escritorio = getDesktopPath();
@@ -405,6 +461,26 @@ public class MenuClientesGui extends JFrame {
             Path archivo = escritorio.resolve("ReporteClientes_" + timestamp + ".txt");
 
             String nl = System.lineSeparator();
+
+            int total = parque.contarClientes();
+            int mayores = 0;
+            int menores = 0;
+            int sinFechaValida = 0;
+
+            for (Cliente c : parque.getClientes()) {
+                Integer edad = edadSegura(c.getFechaNacimiento());
+                if (edad == null) {
+                    sinFechaValida++;
+                } else if (edad >= 18) {
+                    mayores++;
+                } else {
+                    menores++;
+                }
+            }
+            int validos = total - sinFechaValida;
+            double pctMayores = (validos > 0) ? (mayores * 100.0 / validos) : 0.0;
+            double pctMenores = (validos > 0) ? (menores * 100.0 / validos) : 0.0;
+
             try (BufferedWriter w = Files.newBufferedWriter(
                     archivo, StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
@@ -414,16 +490,24 @@ public class MenuClientesGui extends JFrame {
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + nl);
                 w.write("=".repeat(60) + nl + nl);
 
-                w.write(String.format("Total de clientes: %d%s%s",
-                        parque.contarClientes(), nl, nl));
-                w.write(String.format("%-30s\t%-12s\t%-12s%s", "Nombre", "RUT", "Fecha Nacimiento.", nl));
+                w.write(String.format("Total de clientes: %d%s", total, nl));
+                w.write(String.format("Mayores de edad: %d (%.1f%%)%s", mayores, pctMayores, nl));
+                w.write(String.format("Menores de edad: %d (%.1f%%)%s", menores, pctMenores, nl));
+                if (sinFechaValida > 0) {
+                    w.write(String.format("Sin fecha válida: %d (no considerados en %s)%s",
+                            sinFechaValida, "%", nl));
+                }
+                w.write(nl);
+
+                w.write(String.format("%-30s\t%-12s\t%-16s%s", "Nombre", "RUT", "Fecha Nacimiento.", nl));
                 w.write("-".repeat(60) + nl);
 
                 for (Cliente c : parque.getClientes()) {
-                    w.write(String.format("%-30s\t%-12s\t%-12s%s",
+                    w.write(String.format("%-30s\t%-12s\t%-16s%s",
                             c.getNombre(), c.getRut(), c.getFechaNacimiento(), nl));
                 }
             }
+
             JOptionPane.showMessageDialog(this,
                     "Reporte generado en el Escritorio:\n" + archivo.toAbsolutePath(),
                     "Reporte generado", JOptionPane.INFORMATION_MESSAGE);
@@ -436,5 +520,4 @@ public class MenuClientesGui extends JFrame {
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
 }

@@ -56,7 +56,7 @@ public class Atraccion {
         this.descripcion = descripcion;
     }
     //getter y setter de los horarios estandares.
- // En Atraccion.java
+    // En Atraccion.java
     public List<HorariosAtraccion> getHorariosEstandares() {
         if (this.horariosEstandares == null) {
             this.horariosEstandares = new ArrayList<>(); //Si no existe, lo crea, solo en caso que no se genere correctamente 
@@ -83,5 +83,4 @@ public class Atraccion {
                 " | Activa: " + this.activa +
                 " | " + this.descripcion;
     }
-
 }

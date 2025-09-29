@@ -25,6 +25,12 @@ import Excepciones.HorarioMalFormateadoException;
 // Importar las clases del modelo
 import fantasilandia.*;
 
+/*
+ * MENU EXTRA PARA VISUALIZAR TODOS LOS BLOQUES EXISTENTES,
+ * Metodos e implementacion utilizados en MenuBloquesDeDia para mayor Eficacia y comodidad del usuario.
+ * Se puede descomentar del menu principal y tener las funcionalidades asociadas a este menu. 
+ */
+
 public class MenuBloquesGui extends JFrame {
 
     private static final long serialVersionUID = 1L;
@@ -199,7 +205,8 @@ public class MenuBloquesGui extends JFrame {
         actualizarInfo();
     }
     
-    private void agregarBloque() {
+    @SuppressWarnings("unused")
+	private void agregarBloque() {
         JTextField txtFecha = new JTextField();
         JTextField txtCodigo = new JTextField();
         JTextField txtHoraInicio = new JTextField("10:00");
@@ -350,12 +357,25 @@ public class MenuBloquesGui extends JFrame {
             case "Mover a otra fecha":
                 String nuevaFecha = JOptionPane.showInputDialog(this, "Nueva fecha (YYYY-MM-DD):");
                 if (nuevaFecha != null && !nuevaFecha.trim().isEmpty()) {
+                    // Quitamos del día original primero
                     dia.getBloques().remove(bloque);
+                    String fechaOriginal = dia.getFecha();
                     bloque.setFecha(nuevaFecha.trim());
                     DiasActivosAnuales nuevoDia = parque.getODia(nuevaFecha.trim());
-                    nuevoDia.addBloque(bloque);
+                    //SIA 2.8 insercion de caso de try-catch ante un error donde el bloque ya existe en una fecha especifica.
+                    try {
+                        nuevoDia.addBloque(bloque);
+                    } catch (BloqueMalFormateadoException ex) {
+                        // Revertir la operación para no perder el bloque
+                        bloque.setFecha(fechaOriginal);
+                        dia.getBloques().add(bloque);
+                        JOptionPane.showMessageDialog(this,
+                            "No se pudo mover el bloque: " + ex.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
                 break;
+
         }
         
         cargarTodosLosBloques();
@@ -388,16 +408,22 @@ public class MenuBloquesGui extends JFrame {
             "Ingrese el RUT del cliente:", "Insertar Cliente", 
             JOptionPane.QUESTION_MESSAGE);
         
+        //SIA 2.8 Try catch en caso de que no se encuentre el cliente o bloque, y en casos de no poder inscribir al cliente.
         if (rut != null && !rut.trim().isEmpty()) {
-            if (parque.agregarClienteABloquePorRut(fecha, codigoBloque, rut.trim())) {
-                cargarTodosLosBloques();
-                JOptionPane.showMessageDialog(this, "Cliente inscrito exitosamente en el bloque", 
-                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, 
-                    "Error: Cliente o bloque no encontrado", 
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        	try {
+        	    if (parque.agregarClienteABloquePorRut(fecha, codigoBloque, rut.trim())) {
+        	        cargarTodosLosBloques();
+        	        JOptionPane.showMessageDialog(this, "Cliente inscrito exitosamente en el bloque",
+        	            "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        	    } else {
+        	        JOptionPane.showMessageDialog(this, "Error: Cliente o bloque no encontrado",
+        	            "Error", JOptionPane.ERROR_MESSAGE);
+        	    }
+        	} catch (Exception e) {
+        	    JOptionPane.showMessageDialog(this,
+        	        "Error al inscribir cliente en bloque: " + e.getMessage(),
+        	        "Error", JOptionPane.ERROR_MESSAGE);
+        	}
         }
     }
     

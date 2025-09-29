@@ -6,16 +6,13 @@ import java.time.format.DateTimeParseException;
 import Excepciones.FechaMalFormateadaException;
 import Excepciones.RutMalFormateadoException;
 
-/**
- * Clase Cliente con validaciones. Lanza RutMalFormateadoException y FechaMalFormateadaException.
- */
 public class Cliente {
     private String nombre;
     private String rut;
     private String idCliente;
     private String fechaNacimiento; // yyyy-MM-dd
 
-    // Constructor
+    // Constructor. SIA 2.9. Excepciones sobre Rut mal formateado y fecha mal formateada.
     public Cliente(String nombre, String rut, String idCliente, String fechaNacimiento)
             throws RutMalFormateadoException, FechaMalFormateadaException {
         setNombre(nombre);
@@ -24,7 +21,7 @@ public class Cliente {
         setFechaNacimiento(fechaNacimiento);
     }
 
-    // Getters / Setters
+    // Getters / Setters. SIA 1.3
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = (nombre == null ? "" : nombre.trim()); }
 
@@ -50,6 +47,7 @@ public class Cliente {
         this.fechaNacimiento = fechaNacimiento;
     }
 
+    //SIA 2.9 Validacion de fecha.
     private void validarFecha(String fecha) throws FechaMalFormateadaException {
         try {
             // espera ISO yyyy-MM-dd
