@@ -57,7 +57,7 @@ Permite administrar clientes, atracciones y bloques de horario, con persistencia
 
 | Menú principal | Gestión de atracciones |
 |---|---|
-| ![Menu](src/screenshots/menu_principal.png) | ![Atracciones](src/screenshots/Gestion_de_atracciones.png) |
+| ![Menu](src/screenshots/menu_principal.png) | ![Atracciones](src/screenshots/Gestion_atracciones.png) |
 
 | Bloques de horario | Gestión de clientes |
 |---|---|
