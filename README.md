@@ -123,9 +123,9 @@ Build Project (F11)  →  Run Project (F6)
 
 ### ▎CONTEXTO ACADÉMICO
 
-Proyecto desarrollado para **INF2236 — Programación Avanzada** en la [Pontificia Universidad Católica de Valparaíso (PUCV)](https://www.pucv.cl), 4° semestre de Ingeniería en Informática.
+Proyecto desarrollado para **INF2236 — Programación Avanzada** en la [Pontificia Universidad Católica de Valparaíso (PUCV)](https://www.pucv.cl), 4° semestre de Ingeniería en Informática durante el 2025.
 
-Requisitos cubiertos: colecciones anidadas (JCF), sobrecarga y sobreescritura, excepciones personalizadas, persistencia batch, interfaz Swing, diagrama UML.
+Requisitos cubiertos dentro del proyecto: colecciones anidadas (JCF), sobrecarga y sobreescritura, excepciones personalizadas, persistencia batch, interfaz Swing, diagrama UML.
 
 <br/>
 
